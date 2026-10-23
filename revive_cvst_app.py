@@ -427,12 +427,9 @@ if auth is None:
                 st.session_state.auth = {"role": "site", "site": site["id"]}
                 st.rerun()
             st.error("That access code does not match this center.")
-        with st.expander("Prototype access codes for the 14 protocol sites"):
-            for site in SITES:
-                st.write(f"{site['id']} {site['city']}: {site['password']}")
     with right:
         st.subheader("Trial leadership")
-        st.caption("Use yassinossa@yahoo.com. The password ends with the three symbols @ & #")
+        st.caption("Use yassinossa@yahoo.com. The password is not shown on this page.")
         with st.form("lead-gate"):
             email = st.text_input("Email", value=LEAD_EMAIL)
             password = st.text_input("Password", type="password")
@@ -441,7 +438,7 @@ if auth is None:
             if email.strip().lower() == LEAD_EMAIL and password.strip() == LEAD_PASSWORD:
                 st.session_state.auth = {"role": "lead"}
                 st.rerun()
-            st.error("Those leadership credentials were not accepted. The password is case-sensitive and ends with @&#")
+            st.error("Those leadership credentials were not accepted.")
     st.subheader("New center")
     st.caption("Pre-registration and electronic IRB attestation. Enrollment stays closed until leadership activates the site.")
     with st.form("join"):

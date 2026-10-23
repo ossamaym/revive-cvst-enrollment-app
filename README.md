@@ -15,7 +15,7 @@ On Streamlit Community Cloud, the main file may be `revive_cvst_app.py` or `stre
 
 ## Who signs in
 
-- A participating center uses its site access code. The codes for the original 14 sites are listed on the sign-in page.
+- A participating center uses its own site access code. Codes are not shown on the public page.
 - A new center files pre-registration and an electronic IRB attestation. It cannot enroll until trial leadership activates it.
 - Trial leadership (steering committee, DSMB, image core lab, IRB oversight, safety) uses the coordinating-center account. Alexandria (S01) can review the network. Every other site sees only its own cases.
 
