@@ -1,29 +1,22 @@
-# REVIVE-CVST Enrollment Portal
+# REVIVE-CVST enrollment portal
 
-Multi-center electronic data capture and enrollment application for the REVIVE-CVST trial.
+Multicenter electronic data capture for [NCT07548346](https://clinicaltrials.gov/study/NCT07548346). Fourteen protocol sites, the full case-report form, 1:1 randomization stratified by site and intracranial hemorrhage, new-center IRB pre-registration, and trial-leadership desks.
 
-## Features
-- Site-specific login gateways (S01–S05)
-- Pre-loaded with 180 historical records
-- Multi-section CRF data entry
-- Stratified balanced randomization (by Site + ICH)
-- Export capability
+The repository is preloaded with the 180 historical records (cutoff 30 September 2026).
 
-## Local Run
+## Run
+
 ```bash
 pip install -r requirements.txt
 streamlit run revive_cvst_app.py
 ```
 
-## Site Passwords (prototype)
-- S01: egypt2026
-- S02: saudi2026
-- S03: turkey2026
-- S04: qatar2026
-- S05: morocco2026
+On Streamlit Community Cloud, set the main file to `revive_cvst_app.py`.
 
-## Database
-The SQLite database (`revive_cvst.db`) containing the 180 pre-loaded patients must be placed in the same directory as the app for full functionality. For Streamlit Community Cloud deployment, include the DB in the repository (note: large binary files may require Git LFS).
+## Who signs in
 
-## Deployment
-Recommended: Streamlit Community Cloud (share.streamlit.io). Connect the GitHub repo and set main file to `revive_cvst_app.py`.
+- A participating center uses its site access code. The codes for the original 14 sites are listed on the sign-in page.
+- A new center files pre-registration and an electronic IRB attestation. It cannot enroll until trial leadership activates it.
+- Trial leadership (steering committee, DSMB, image core lab, IRB oversight, safety) uses the coordinating-center account. Alexandria (S01) can review the network. Every other site sees only its own cases.
+
+New records are stored in `revive_protocol.db` beside the app. On Streamlit Community Cloud the disk resets when the app container is rebuilt, and the 180 historical records are loaded again from `data/seed.json`.
