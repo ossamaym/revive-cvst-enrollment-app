@@ -11,7 +11,7 @@ pip install -r requirements.txt
 streamlit run revive_cvst_app.py
 ```
 
-On Streamlit Community Cloud, set the main file to `revive_cvst_app.py`.
+On Streamlit Community Cloud, the main file may be `revive_cvst_app.py` or `streamlit_app.py`. Both run this portal. The public address is [https://revive-cvst-enrollment-app.streamlit.app](https://revive-cvst-enrollment-app.streamlit.app). A push to `main` rebuilds the app; if the old screen is still showing, open the app menu and choose Reboot.
 
 ## Who signs in
 
