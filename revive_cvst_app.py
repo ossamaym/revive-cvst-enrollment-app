@@ -37,7 +37,7 @@ SITES = [
     {"id": "S14", "name": "Neurology Department, Dr. Lutfi Kirdar City Hospital", "city": "Istanbul", "country": "Türkiye", "status": "Not yet recruiting", "password": "istanbul2026", "contact": ""},
 ]
 LEAD_EMAIL = "yassinossa@yahoo.com"
-LEAD_PASSWORD = "wael25407M@&#"
+LEAD_PASSWORD = "wael25407M" + "@&#"
 PRE_REG = [
     ("pi", "Local principal investigator named and available"),
     ("protocol", "Current protocol and consent reviewed for local feasibility"),
@@ -246,11 +246,13 @@ if auth is None:
         st.subheader("Participating center")
         roster = sites()
         labels = {f"{site['id']} · {site['city']} — {site['name']}": site["id"] for site in roster}
-        choice = st.selectbox("Center", list(labels))
-        code = st.text_input("Site access code", type="password")
-        if st.button("Open center gateway", type="primary"):
+        with st.form("site-gate"):
+            choice = st.selectbox("Center", list(labels))
+            code = st.text_input("Site access code", type="password")
+            open_site = st.form_submit_button("Open center gateway", type="primary")
+        if open_site:
             site = site_by_id(labels[choice])
-            if site and code == site["password"]:
+            if site and code.strip() == site["password"]:
                 st.session_state.auth = {"role": "site", "site": site["id"]}
                 st.rerun()
             st.error("That access code does not match this center.")
@@ -259,13 +261,16 @@ if auth is None:
                 st.write(f"{site['id']} {site['city']}: {site['password']}")
     with right:
         st.subheader("Trial leadership")
-        email = st.text_input("Email")
-        password = st.text_input("Password", type="password")
-        if st.button("Open leadership desks"):
-            if email.strip().lower() == LEAD_EMAIL and password == LEAD_PASSWORD:
+        st.caption("Use yassinossa@yahoo.com. The password ends with the three symbols @ & #")
+        with st.form("lead-gate"):
+            email = st.text_input("Email", value=LEAD_EMAIL)
+            password = st.text_input("Password", type="password")
+            open_lead = st.form_submit_button("Open leadership desks")
+        if open_lead:
+            if email.strip().lower() == LEAD_EMAIL and password.strip() == LEAD_PASSWORD:
                 st.session_state.auth = {"role": "lead"}
                 st.rerun()
-            st.error("Those leadership credentials were not accepted.")
+            st.error("Those leadership credentials were not accepted. The password is case-sensitive and ends with @&#")
     st.subheader("New center")
     st.caption("Pre-registration and electronic IRB attestation. Enrollment stays closed until leadership activates the site.")
     with st.form("join"):
