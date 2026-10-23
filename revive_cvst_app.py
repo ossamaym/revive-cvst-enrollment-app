@@ -234,67 +234,140 @@ def widget(field: dict, current: str) -> str:
     return st.text_input(label, value=current, key=key)
 
 
+LOGO = """
+<svg class="mark" width="36" height="36" viewBox="0 0 32 32" aria-hidden="true" style="width:36px;height:36px;flex:none;display:block">
+  <rect width="32" height="32" rx="8" fill="#0c5c56"></rect>
+  <path d="M16 5.5v7.2" fill="none" stroke="#f3efe6" stroke-width="2.4" stroke-linecap="round"></path>
+  <path d="M7.5 20.5c2.6-3.4 5.4-5 8.5-5s5.9 1.6 8.5 5" fill="none" stroke="#f3efe6" stroke-width="2.4" stroke-linecap="round"></path>
+  <circle cx="16" cy="14.2" r="2.15" fill="#9a3e2f"></circle>
+</svg>
+"""
+
+PAGE_CSS = """
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,560;7..72,680&family=Outfit:wght@400;500;600&display=swap');
+  html, body, [data-testid="stAppViewContainer"], .stApp { background: #f3efe6; color: #1a2421; }
+  [data-testid="stHeader"] { background: transparent; }
+  .block-container { max-width: 72rem; padding-top: 0; }
+  .rv-bar { display:flex; align-items:center; gap:12px; background:#fffdf8; border:1px solid #e2d9cc; border-radius:18px; padding:10px 14px; margin: 8px 0 18px; }
+  .rv-bar .mark { width:36px; height:36px; flex:none; }
+  .rv-bar .brand { flex:1; min-width:0; }
+  .rv-bar .name { font-family: Literata, Georgia, serif; font-size:1.25rem; line-height:1.1; color:#1a2421; }
+  .rv-bar .sub { color:#5e6a64; font-size:0.9rem; }
+  .rv-bar a, a.rv-btn { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:0 16px; border-radius:999px; text-decoration:none; font-family: Outfit, system-ui, sans-serif; font-weight:550; }
+  a.rv-ghost { border:1px solid #e2d9cc; background:#fffdf8; color:#1a2421; }
+  a.rv-primary { background:#0c5c56; color:#f3fffc; }
+  a.rv-accent { background:#9a3e2f; color:#fff8f6; }
+  .rv-wrap { font-family: Outfit, system-ui, sans-serif; color:#1a2421; }
+  .rv-hero { display:grid; grid-template-columns: 1.4fr 0.8fr; gap:32px; align-items:end; padding: 12px 8px 28px; }
+  .rv-chip { display:inline-flex; border-radius:999px; padding:2px 10px; background:#e7f3f1; color:#0c5c56; font-size:0.75rem; font-weight:600; }
+  .rv-hero h1 { font-family: Literata, Georgia, serif; font-size:3.4rem; line-height:1.05; font-weight:560; margin:16px 0 0; }
+  .rv-hero p.lead { max-width:38rem; font-size:1.12rem; line-height:1.55; color:#5e6a64; }
+  .rv-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:22px; }
+  .rv-card { background:#0c5c56; color:#f3efe6; border-radius:24px; padding:24px; }
+  .rv-card .k { color:#d5ebe7; font-size:0.9rem; }
+  .rv-card .n { font-family: Literata, Georgia, serif; font-size:3.2rem; line-height:1; margin:8px 0 0; }
+  .rv-barline { height:8px; background:#083e3a; border-radius:999px; overflow:hidden; margin-top:16px; }
+  .rv-barline span { display:block; height:100%; background:#e7c3ba; }
+  .rv-facts { display:grid; grid-template-columns: repeat(3, 1fr); gap:28px; background:#fffdf8; border:1px solid #e2d9cc; border-radius:24px; padding:28px; }
+  .rv-facts .k { color:#9a3e2f; font-size:0.9rem; margin:0; }
+  .rv-facts h2, .rv-split h2 { font-family: Literata, Georgia, serif; font-weight:560; color:#1a2421; }
+  .rv-facts p, .rv-split p, .rv-split li { color:#5e6a64; line-height:1.5; }
+  .rv-split { display:grid; grid-template-columns: 0.9fr 1.1fr; gap:36px; padding: 36px 8px 12px; }
+  .rv-sites { display:grid; grid-template-columns: 1fr 1fr; gap:8px; list-style:none; padding:0; margin:12px 0 0; }
+  .rv-sites li { background:#fffdf8; border:1px solid #e2d9cc; border-radius:16px; padding:8px 12px; }
+  .rv-sites .city { margin:0; color:#1a2421; font-weight:550; font-size:0.92rem; }
+  .rv-sites .meta, .rv-sites span { color:#5e6a64; font-weight:400; font-size:0.75rem; }
+  @media (max-width: 800px) {
+    .rv-hero, .rv-facts, .rv-split, .rv-sites { grid-template-columns: 1fr; }
+    .rv-hero h1 { font-size:2.4rem; }
+  }
+</style>
+"""
+
+
+def top_bar(href: str, label: str) -> str:
+    return (
+        '<div class="rv-bar" style="display:flex;align-items:center;gap:12px;background:#fffdf8;'
+        'border:1px solid #e2d9cc;border-radius:18px;padding:10px 14px;margin:8px 0 18px">'
+        f'{LOGO}<div style="flex:1;min-width:0"><div style="font-family:Literata,Georgia,serif;font-size:1.25rem;line-height:1.1;color:#1a2421">REVIVE-CVST</div>'
+        '<div style="color:#5e6a64;font-size:0.9rem">NCT07548346</div></div>'
+        f'<a class="rv-ghost" href="{href}" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;'
+        f'text-decoration:none;border:1px solid #e2d9cc;background:#fffdf8;color:#1a2421;font-weight:550">{label}</a></div>'
+    )
+
+
+def front_html(enrolled: int) -> str:
+    width = min(100, round(enrolled / 440 * 100))
+    cards = "".join(
+        f'<li><p class="city">{site["city"]}<span> · {site["country"]}</span></p><p class="meta">{site["id"]} · {site["status"]}</p></li>'
+        for site in SITES
+    )
+    return f"""
+    <div class="rv-wrap">
+      {top_bar("?door=gate", "Center sign-in")}
+      <section class="rv-hero">
+        <div>
+          <span class="rv-chip">MENASINO-REVIVE-2026-01</span>
+          <h1>Reopen the sinus. Measure what follows.</h1>
+          <p class="lead">A multicenter PROBE trial of endovascular thrombectomy plus anticoagulation versus anticoagulation alone for cerebral venous thrombosis. The blinded primary endpoint is the modified Rankin Scale shift at 180 days.</p>
+          <div class="rv-actions">
+            <a class="rv-btn rv-accent" href="?door=join">Apply to enroll as a center</a>
+            <a class="rv-btn rv-primary" href="?door=gate">Open your center gateway</a>
+          </div>
+        </div>
+        <aside class="rv-card">
+          <div class="k">Enrollment toward January 2029</div>
+          <div class="n">{enrolled}</div>
+          <div>of 440 participants</div>
+          <div class="rv-barline"><span style="width:{width}%"></span></div>
+          <p>Allocation is 1:1 inside permuted blocks of 4, stratified by site and by intracranial hemorrhage. If thrombectomy is assigned, it is performed within 24 hours.</p>
+        </aside>
+      </section>
+      <section class="rv-facts">
+        <article><p class="k">Who is enrolled</p><h2>Adults 18–65 with CVST</h2><p>Acute or subacute thrombosis of a major dural sinus, symptom onset within 21 days, and at least one severity marker. Premorbid mRS 0–2. GCS 9 or higher.</p></article>
+        <article><p class="k">What the center does</p><h2>Both arms stay on anticoagulation</h2><p>Unfractionated or low-molecular-weight heparin, then an oral agent. The trial adds thrombectomy only when that arm is assigned. Imaging follow-up is read by the core lab.</p></article>
+        <article><p class="k">Why join now</p><h2>The network is still open</h2><p>Fourteen protocol sites are listed. Further centers in the region can file IRB pre-registration here. No participant is randomized until the site is activated.</p></article>
+      </section>
+      <section class="rv-split">
+        <div>
+          <h2>Bring a center into the trial</h2>
+          <p>Stroke and neurointervention services that already treat cerebral venous thrombosis can apply. Activation follows local ethics approval and a review by the coordinating center in Alexandria.</p>
+          <ul>
+            <li>CTV, MRV, or DSA for diagnosis and follow-up.</li>
+            <li>An anticoagulation pathway already in use.</li>
+            <li>A thrombectomy team that can start within 24 hours when assigned.</li>
+            <li>A named principal investigator and an IRB reference.</li>
+          </ul>
+          <p><a class="rv-btn rv-accent" href="?door=join">Start pre-registration</a></p>
+        </div>
+        <div>
+          <h2>Sites already in the protocol</h2>
+          <ul class="rv-sites">{cards}</ul>
+        </div>
+      </section>
+    </div>
+    """
+
+
 ensure_seed()
 st.set_page_config(page_title="REVIVE-CVST", page_icon="🩺", layout="wide")
+st.markdown(PAGE_CSS, unsafe_allow_html=True)
 auth = st.session_state.setdefault("auth", None)
-st.session_state.setdefault("door", "front")
+raw = st.query_params.get("door", "")
+requested = raw[0] if isinstance(raw, list) else str(raw or "")
+if requested in ("front", "gate", "join"):
+    st.session_state.door = requested
+else:
+    st.session_state.setdefault("door", "front")
 
 if auth is None and st.session_state.door == "front":
     enrolled = len(patients()) or 180
-    st.markdown(
-        """
-        <style>
-          .rv-hero {background:#0c5c56;color:#f3efe6;border-radius:24px;padding:28px 28px 24px;}
-          .rv-kicker {color:#e7c3ba;font-size:0.9rem;}
-          .rv-count {font-size:3.2rem;line-height:1;margin:8px 0 0;}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-    left, right = st.columns([1.4, 0.8])
-    with left:
-        st.caption("NCT07548346 · MENASINO-REVIVE-2026-01")
-        st.title("Reopen the sinus. Measure what follows.")
-        st.write(
-            "A multicenter PROBE trial of endovascular thrombectomy plus anticoagulation versus "
-            "anticoagulation alone for cerebral venous thrombosis. The blinded primary endpoint is "
-            "the modified Rankin Scale shift at 180 days."
-        )
-        a, b = st.columns(2)
-        if a.button("Apply to enroll as a center", type="primary"):
-            st.session_state.door = "join"
-            st.rerun()
-        if b.button("Center sign-in"):
-            st.session_state.door = "gate"
-            st.rerun()
-    with right:
-        st.markdown(
-            f'<div class="rv-hero"><div class="rv-kicker">Enrollment toward January 2029</div>'
-            f'<div class="rv-count">{enrolled}</div><div>of 440 participants</div>'
-            f"<p>Allocation is 1:1, stratified by site and intracranial hemorrhage. "
-            f"Thrombectomy, when assigned, is performed within 24 hours.</p></div>",
-            unsafe_allow_html=True,
-        )
-    st.divider()
-    c1, c2, c3 = st.columns(3)
-    c1.subheader("Who is enrolled")
-    c1.write("Adults 18–65 with acute or subacute CVST, onset within 21 days, a severity marker, premorbid mRS 0–2, and GCS of 9 or higher.")
-    c2.subheader("What the center does")
-    c2.write("Both arms receive anticoagulation. Thrombectomy is added only when that arm is assigned. Follow-up imaging is read by the core lab.")
-    c3.subheader("Why join now")
-    c3.write("Fourteen protocol sites are listed. Further centers can file IRB pre-registration. No one is randomized until the site is activated.")
-    st.subheader("Sites already in the protocol")
-    st.dataframe(
-        pd.DataFrame([{"Site": s["id"], "City": s["city"], "Country": s["country"], "Status": s["status"], "Center": s["name"]} for s in SITES]),
-        use_container_width=True,
-        hide_index=True,
-    )
+    st.markdown(front_html(enrolled), unsafe_allow_html=True)
     st.stop()
 
 if auth is None and st.session_state.door == "join":
-    if st.button("Back to the study"):
-        st.session_state.door = "front"
-        st.rerun()
+    st.markdown(top_bar("?door=front", "Back to the study"), unsafe_allow_html=True)
     st.title("Apply to enroll as a center")
     st.caption("Electronic IRB attestation. Enrollment stays closed until trial leadership activates the site.")
     with st.form("join"):
@@ -336,9 +409,7 @@ if auth is None and st.session_state.door == "join":
     st.stop()
 
 if auth is None:
-    if st.button("Back to the study"):
-        st.session_state.door = "front"
-        st.rerun()
+    st.markdown(top_bar("?door=front", "Back to the study"), unsafe_allow_html=True)
     st.title("REVIVE-CVST")
     st.caption("NCT07548346 · MENASINO-REVIVE-2026-01 · target 440 · mRS shift at 180 days")
     left, right = st.columns(2)
@@ -413,6 +484,7 @@ if auth is None:
 if st.button("Leave"):
     st.session_state.auth = None
     st.session_state.door = "front"
+    st.query_params.clear()
     st.session_state.pop("edit_id", None)
     st.rerun()
 
