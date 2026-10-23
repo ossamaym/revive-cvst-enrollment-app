@@ -237,8 +237,108 @@ def widget(field: dict, current: str) -> str:
 ensure_seed()
 st.set_page_config(page_title="REVIVE-CVST", page_icon="🩺", layout="wide")
 auth = st.session_state.setdefault("auth", None)
+st.session_state.setdefault("door", "front")
+
+if auth is None and st.session_state.door == "front":
+    enrolled = len(patients()) or 180
+    st.markdown(
+        """
+        <style>
+          .rv-hero {background:#0c5c56;color:#f3efe6;border-radius:24px;padding:28px 28px 24px;}
+          .rv-kicker {color:#e7c3ba;font-size:0.9rem;}
+          .rv-count {font-size:3.2rem;line-height:1;margin:8px 0 0;}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+    left, right = st.columns([1.4, 0.8])
+    with left:
+        st.caption("NCT07548346 · MENASINO-REVIVE-2026-01")
+        st.title("Reopen the sinus. Measure what follows.")
+        st.write(
+            "A multicenter PROBE trial of endovascular thrombectomy plus anticoagulation versus "
+            "anticoagulation alone for cerebral venous thrombosis. The blinded primary endpoint is "
+            "the modified Rankin Scale shift at 180 days."
+        )
+        a, b = st.columns(2)
+        if a.button("Apply to enroll as a center", type="primary"):
+            st.session_state.door = "join"
+            st.rerun()
+        if b.button("Center sign-in"):
+            st.session_state.door = "gate"
+            st.rerun()
+    with right:
+        st.markdown(
+            f'<div class="rv-hero"><div class="rv-kicker">Enrollment toward January 2029</div>'
+            f'<div class="rv-count">{enrolled}</div><div>of 440 participants</div>'
+            f"<p>Allocation is 1:1, stratified by site and intracranial hemorrhage. "
+            f"Thrombectomy, when assigned, is performed within 24 hours.</p></div>",
+            unsafe_allow_html=True,
+        )
+    st.divider()
+    c1, c2, c3 = st.columns(3)
+    c1.subheader("Who is enrolled")
+    c1.write("Adults 18–65 with acute or subacute CVST, onset within 21 days, a severity marker, premorbid mRS 0–2, and GCS of 9 or higher.")
+    c2.subheader("What the center does")
+    c2.write("Both arms receive anticoagulation. Thrombectomy is added only when that arm is assigned. Follow-up imaging is read by the core lab.")
+    c3.subheader("Why join now")
+    c3.write("Fourteen protocol sites are listed. Further centers can file IRB pre-registration. No one is randomized until the site is activated.")
+    st.subheader("Sites already in the protocol")
+    st.dataframe(
+        pd.DataFrame([{"Site": s["id"], "City": s["city"], "Country": s["country"], "Status": s["status"], "Center": s["name"]} for s in SITES]),
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.stop()
+
+if auth is None and st.session_state.door == "join":
+    if st.button("Back to the study"):
+        st.session_state.door = "front"
+        st.rerun()
+    st.title("Apply to enroll as a center")
+    st.caption("Electronic IRB attestation. Enrollment stays closed until trial leadership activates the site.")
+    with st.form("join"):
+        c1, c2, c3 = st.columns(3)
+        center = c1.text_input("Center name")
+        city = c2.text_input("City")
+        country = c3.text_input("Country")
+        pi = c1.text_input("Principal investigator")
+        pi_email = c2.text_input("PI email")
+        phone = c3.text_input("PI phone")
+        annual = c1.text_input("Estimated CVST cases per year")
+        evt = c2.selectbox("EVT within 24 hours", ["", "Y", "N"])
+        imaging = c3.selectbox("Diagnostic imaging", ["", "CTV", "MRV", "DSA", "Multiple"])
+        irb_status = c1.selectbox("IRB / ethics status", ["Submitted", "Approved"])
+        irb_number = c2.text_input("IRB reference number")
+        irb_date = c3.text_input("IRB date", placeholder="YYYY-MM-DD")
+        checks = {key: st.checkbox(label) for key, label in PRE_REG}
+        signature = st.text_input("Electronic signature (full name)")
+        title = st.text_input("Title", value="Principal investigator")
+        attest = st.checkbox("I sign this pre-registration and IRB attestation electronically.")
+        submitted = st.form_submit_button("Sign and submit pre-registration", type="primary")
+    if submitted:
+        missing = [label for key, label in PRE_REG if not checks[key]]
+        if not all([center.strip(), city.strip(), country.strip(), pi.strip()]) or "@" not in pi_email:
+            st.error("Center, city, country, investigator, and a valid email are required.")
+        elif missing or not irb_number.strip() or not attest or len(signature.strip()) < 3:
+            st.error("Complete every checklist item, the IRB reference, and the signature.")
+        else:
+            app_id = "APP-" + str(int(datetime.now().timestamp()))[-6:]
+            save_item("application", app_id, {
+                "id": app_id, "submittedAt": stamp(), "status": "Pending review",
+                "centerName": center, "city": city, "country": country, "piName": pi,
+                "piEmail": pi_email, "piPhone": phone, "annualCvst": annual, "evtCapable": evt,
+                "imaging": imaging, "irbStatus": irb_status, "irbNumber": irb_number, "irbDate": irb_date,
+                "checklist": checks, "signatureName": signature, "signatureTitle": title,
+                "signatureDate": stamp()[:10], "issuedSiteId": "", "issuedPassword": "",
+            })
+            st.success(f"Application {app_id} is with the coordinating center.")
+    st.stop()
 
 if auth is None:
+    if st.button("Back to the study"):
+        st.session_state.door = "front"
+        st.rerun()
     st.title("REVIVE-CVST")
     st.caption("NCT07548346 · MENASINO-REVIVE-2026-01 · target 440 · mRS shift at 180 days")
     left, right = st.columns(2)
@@ -312,6 +412,7 @@ if auth is None:
 
 if st.button("Leave"):
     st.session_state.auth = None
+    st.session_state.door = "front"
     st.session_state.pop("edit_id", None)
     st.rerun()
 
